@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1704821121380-1
+      author: jmleclercq
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                  name: id
+                  type: INTEGER
+              - column:
+                  name: nom
+                  type: VARCHAR
+              - column:
+                  name: description
+                  type: VARCHAR
+            tableName: conference
