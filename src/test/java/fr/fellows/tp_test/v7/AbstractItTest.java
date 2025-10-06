@@ -1,6 +1,7 @@
-package fr.fellows.tp_test.v6;
+package fr.fellows.tp_test.v7;
 
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -21,6 +22,11 @@ public class AbstractItTest extends AbstractDataTest {
 
     @Autowired
     MockMvc mvc;
+
+    @BeforeEach
+    void setup() {
+        creerBucketConference();
+    }
 
     @SneakyThrows
     protected MvcResult doRequest(MockHttpServletRequestBuilder request) {

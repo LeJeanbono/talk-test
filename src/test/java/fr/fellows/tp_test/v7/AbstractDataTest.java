@@ -1,4 +1,4 @@
-package fr.fellows.tp_test.v6;
+package fr.fellows.tp_test.v7;
 
 import fr.fellows.tp_test.infrastructure.database.ConferenceEntity;
 import fr.fellows.tp_test.infrastructure.database.ConferenceRepository;

@@ -1,22 +1,27 @@
 package fr.fellows.tp_test.v1;
 
+import fr.fellows.tp_test.domain.exception.ErreurInconnueException;
 import fr.fellows.tp_test.domain.model.Conference;
 import fr.fellows.tp_test.infrastructure.adapter.ConferenceAdapter;
 import fr.fellows.tp_test.infrastructure.database.ConferenceEntity;
 import fr.fellows.tp_test.infrastructure.database.ConferenceRepository;
 import fr.fellows.tp_test.infrastructure.mapper.ConferenceInfraMapper;
 import fr.fellows.tp_test.infrastructure.mapper.ConferenceInfraMapperImpl;
+import fr.fellows.tp_test.infrastructure.s3.S3Provider;
 import fr.fellows.tp_test.infrastructure.sessionize.SessionizeProvider;
+import io.awspring.cloud.s3.S3Exception;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowableOfType;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ConferenceAdapterTest {
@@ -30,6 +35,9 @@ class ConferenceAdapterTest {
     @Mock
     ConferenceRepository conferenceRepositoryMock;
 
+    @Mock
+    S3Provider s3ProviderMock;
+
     @InjectMocks
     ConferenceAdapter sut;
 
@@ -39,8 +47,14 @@ class ConferenceAdapterTest {
     @Captor
     ArgumentCaptor<Conference> captorConference;
 
+    @Captor
+    ArgumentCaptor<String> captorFileName;
+
+    @Captor
+    ArgumentCaptor<String> captorFileContent;
+
     @Test
-    void etete() {
+    void doitRecupererConference() {
         // Given
         ConferenceEntity entity = new ConferenceEntity();
         entity.setId(456L);
@@ -57,7 +71,7 @@ class ConferenceAdapterTest {
     }
 
     @Test
-    void hsshs() {
+    void doitPublierConference() {
         // Given
         Conference conference = new Conference(456L, "Vive les tests", "la description", Conference.StatusConference.EN_REDACTION);
         doNothing().when(sessionizeProviderMock).publierConference(captorConference.capture());
@@ -67,5 +81,47 @@ class ConferenceAdapterTest {
 
         // Then
         assertThat(captorConference.getValue()).usingRecursiveComparison().isEqualTo(new Conference(456L, "Vive les tests", "la description", Conference.StatusConference.EN_REDACTION));
+    }
+
+    @Test
+    void doitThrowUneExceptionQuandPublierConferenceEnErreur() {
+        // Given
+        Exception exception = new HttpClientErrorException(HttpStatusCode.valueOf(400));
+        Conference conference = new Conference(456L, "Vive les tests", "la description", Conference.StatusConference.EN_REDACTION);
+        doThrow(exception).when(sessionizeProviderMock).publierConference(captorConference.capture());
+
+        // When
+        ErreurInconnueException result = catchThrowableOfType(ErreurInconnueException.class, () -> sut.publierConference(conference));
+
+        // Then
+        assertThat(result.getException()).isEqualTo(exception);
+    }
+
+    @Test
+    void doitBackUpConference() {
+        // Given
+        Conference conference = new Conference(456L, "Vive les tests", "la description", Conference.StatusConference.EN_REDACTION);
+        doNothing().when(s3ProviderMock).upload(captorFileName.capture(), captorFileContent.capture());
+
+        // When
+        sut.backUpConference(conference);
+
+        // Then
+        assertThat(captorFileName.getValue()).isEqualTo("456.txt");
+        assertThat(captorFileContent.getValue()).isEqualTo("Vive les tests\r\nla description");
+    }
+
+    @Test
+    void doitThrowUneExceptionQuandBackUpConferenceEnErreur() {
+        // Given
+        Exception exception = new S3Exception("erreur S3", null);
+        Conference conference = new Conference(456L, "Vive les tests", "la description", Conference.StatusConference.EN_REDACTION);
+        doThrow(exception).when(s3ProviderMock).upload(captorFileName.capture(), captorFileContent.capture());
+
+        // When
+        ErreurInconnueException result = catchThrowableOfType(ErreurInconnueException.class, () -> sut.backUpConference(conference));
+
+        // Then
+        assertThat(result.getException()).isEqualTo(exception);
     }
 }

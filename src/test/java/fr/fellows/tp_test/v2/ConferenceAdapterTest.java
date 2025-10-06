@@ -4,7 +4,7 @@ import fr.fellows.tp_test.domain.model.Conference;
 import fr.fellows.tp_test.infrastructure.adapter.ConferenceAdapter;
 import fr.fellows.tp_test.infrastructure.database.ConferenceRepository;
 import fr.fellows.tp_test.infrastructure.mapper.ConferenceInfraMapperImpl;
-import fr.fellows.tp_test.infrastructure.sessionize.PostTalkRequestSessionize;
+import fr.fellows.tp_test.infrastructure.sessionize.PostTalkRequestSessionizeDto;
 import fr.fellows.tp_test.infrastructure.sessionize.SessionizeConfigurationProperties;
 import fr.fellows.tp_test.infrastructure.sessionize.SessionizeProvider;
 import org.junit.jupiter.api.Test;
@@ -12,9 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.RestTemplate;
 
@@ -26,13 +26,13 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = {ConferenceAdapter.class, SessionizeProvider.class, ConferenceInfraMapperImpl.class})
 class ConferenceAdapterTest {
 
-    @MockBean
+    @MockitoBean
     RestTemplate restTemplateMock;
 
-    @MockBean
+    @MockitoBean
     SessionizeConfigurationProperties sessionizeConfigurationPropertiesMock;
 
-    @MockBean
+    @MockitoBean
     ConferenceRepository conferenceRepositoryMock;
 
     @Autowired
@@ -42,7 +42,7 @@ class ConferenceAdapterTest {
     ArgumentCaptor<String> captorUrl;
 
     @Captor
-    ArgumentCaptor<PostTalkRequestSessionize> captorBody;
+    ArgumentCaptor<PostTalkRequestSessionizeDto> captorBody;
 
     @Test
     void rtete() {
@@ -56,6 +56,6 @@ class ConferenceAdapterTest {
 
         // Then
         assertThat(captorUrl.getValue()).isEqualTo("https://url.com/api/talks");
-        assertThat(captorBody.getValue()).isEqualTo(new PostTalkRequestSessionize("Vive les tests", "la description"));
+        assertThat(captorBody.getValue()).isEqualTo(new PostTalkRequestSessionizeDto("Vive les tests", "la description"));
     }
 }

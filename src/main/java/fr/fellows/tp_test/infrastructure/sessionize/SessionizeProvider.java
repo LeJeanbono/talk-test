@@ -13,7 +13,7 @@ public class SessionizeProvider {
     private final SessionizeConfigurationProperties sessionizeConfigurationProperties;
 
     public void publierConference(Conference conference) {
-        PostTalkRequestSessionize request = new PostTalkRequestSessionize(conference.getNom(), conference.getDescription());
+        PostTalkRequestSessionizeDto request = new PostTalkRequestSessionizeDto(conference.getNom(), conference.getDescription());
         restTemplate.postForEntity(sessionizeConfigurationProperties.getBaseUrl() + "/api/talks", request, Void.class);
     }
 }

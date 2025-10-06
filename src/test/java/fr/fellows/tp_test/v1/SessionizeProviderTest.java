@@ -1,7 +1,7 @@
 package fr.fellows.tp_test.v1;
 
 import fr.fellows.tp_test.domain.model.Conference;
-import fr.fellows.tp_test.infrastructure.sessionize.PostTalkRequestSessionize;
+import fr.fellows.tp_test.infrastructure.sessionize.PostTalkRequestSessionizeDto;
 import fr.fellows.tp_test.infrastructure.sessionize.SessionizeConfigurationProperties;
 import fr.fellows.tp_test.infrastructure.sessionize.SessionizeProvider;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class SessionizeProviderTest {
     ArgumentCaptor<String> captorUrl;
 
     @Captor
-    ArgumentCaptor<PostTalkRequestSessionize> captorBody;
+    ArgumentCaptor<PostTalkRequestSessionizeDto> captorBody;
 
     @Test
     void hfhgdgh() {
@@ -48,7 +48,7 @@ class SessionizeProviderTest {
 
         // Then
         assertThat(captorUrl.getValue()).isEqualTo("https://url.com/api/talks");
-        assertThat(captorBody.getValue()).isEqualTo(new PostTalkRequestSessionize("Vive les tests", "la description"));
+        assertThat(captorBody.getValue()).isEqualTo(new PostTalkRequestSessionizeDto("Vive les tests", "la description"));
     }
 
 }

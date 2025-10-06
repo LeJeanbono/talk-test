@@ -31,7 +31,7 @@ class ConferenceAdapterTest {
     static PostgreSQLContainer<?> pg = new PostgreSQLContainer<>("postgres:latest");
 
     @Test
-    void rtrt() {
+    void recupererConference() {
         // Given
         ConferenceEntity entity = new ConferenceEntity();
         entity.setNom("Vive les tests");

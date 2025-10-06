@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class RessourceNonTrouveeException extends RuntimeException {
 
-    private Long id;
+    private final Long id;
 
     public RessourceNonTrouveeException(Long id) {
         super();

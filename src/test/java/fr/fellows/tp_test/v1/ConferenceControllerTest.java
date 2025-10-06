@@ -30,7 +30,7 @@ class ConferenceControllerTest {
     ArgumentCaptor<Long> captorId;
 
     @Test
-    void erer() {
+    void publierConference() {
         // Given
         Conference conference = new Conference(123L, "Vive les tests", "la description", Conference.StatusConference.PUBLIEE);
         when(conferencePortInMock.publierConference(captorId.capture())).thenReturn(conference);

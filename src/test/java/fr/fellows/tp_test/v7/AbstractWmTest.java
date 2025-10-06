@@ -1,4 +1,4 @@
-package fr.fellows.tp_test.v6;
+package fr.fellows.tp_test.v7;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.wiremock.spring.ConfigureWireMock;
@@ -17,13 +17,26 @@ public class AbstractWmTest {
 
     protected void stubPublish() {
         wireMock.stubFor(post("/api/talks")
+                .withBasicAuth("login", "password")
                 .withRequestBody(equalToJson("""
                         {
                             "nom": "Vive les tests",
-                            "desc": "la description"
+                            "description": "la description"
                         }
                         """))
                 .willReturn(ok()));
+    }
+
+    protected void stubPublishEnErreur() {
+        wireMock.stubFor(post("/api/talks")
+                .withBasicAuth("login", "password")
+                .withRequestBody(equalToJson("""
+                        {
+                            "nom": "Vive les tests",
+                            "description": "la description"
+                        }
+                        """))
+                .willReturn(serverError()));
     }
 
 }
