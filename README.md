@@ -2,7 +2,11 @@
 
 ## V1 - Uniquement des TU
 
+![image](./images/v1.png)
+
 ## V2 - Des TU un peu plus long
+
+![image](./images/v2.png)
 * Créer un nouveau package de test v2 dans `fr.fellows.tp_test`
 * Améliorer les tests dans `ConferenceAdapterTest`, le but est de descendre le mock d'un niveau, il faut donc mocker :
   * `RestTemplate`
@@ -19,6 +23,7 @@
 * `@Mock` sera remplacé par `@MockitoBean` et `@InjectMocks` par `@Autowired`
 
 ## V3 - Testons les requêtes entrantes
+![image](./images/v3.png)
 * Créer un nouveau package de test v3 dans `fr.fellows.tp_test`
 * Ici c'est `ConferenceControllerTest` qui va évoluer pour simuler une requête http et l'on va devoir rajouter aussi du Spring
 * En annotation de class, utiliser :
@@ -35,6 +40,7 @@
 * L'idée est aussi de supprimer la class `ControllerExceptionHandlerTest` et de rajouter les tests des cas d'erreur
 
 ## v4 - Discutons avec la BDD
+![image](./images/v4.png)
 * Créer un nouveau package de test v4 dans `fr.fellows.tp_test`
 * En annotation de class de `ConferenceAdapterTest`, utiliser :
 ```java
@@ -51,7 +57,8 @@
 * `@ServiceConnection` va automatiquement configurer Spring avec les informations de connexion à la base de données
 * Pour insérer des jeux de données en base, j'aime bien passer par un repository, il faut donc injecter `ConferenceRepository` et l'utiliser dans le test pour faire un insert (à noter que le MockitoBean sur le repository doit disparaitre)
 
-## v5 - 
+## v5 - Rajoutons les requêtes sortantes
+![image](./images/v5.png)
 * Créer un nouveau package de test v5 dans `fr.fellows.tp_test`
 * En annotation de class de `ConferenceAdapterTest`, rajouter :
 ```java
@@ -67,7 +74,8 @@
 * Retirer les mock sur `RestTemplate` et `SessionizeConfigurationProperties`
 * Dans le test, déclarer le endPoint dans wiremock `wireMock.stubFor(post("/api/talks")`, il est intéressant de vérifier le header le login, le body et de retourner un code http 201
 
-## v6 -
+## v6 - Un peu d’infrastructure AWS
+![image](./images/v6.png)
 * Créer un nouveau package de test v5 dans `fr.fellows.tp_test`
 * LocalStack va servir à démarrer un conteneur docker pour simuler un bucket S3
 ```java
@@ -81,3 +89,6 @@
 
 ## v7 - 
 * Garder les tests de la correction de la v6 et améliorer l'expérience de rédaction d'un test en créant des abstractions dans des méthodes
+
+Etat final :
+![image](./images/v7.png)
