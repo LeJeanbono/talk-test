@@ -99,6 +99,7 @@
         <dependency>
             <groupId>io.awspring.cloud</groupId>
             <artifactId>spring-cloud-aws-testcontainers</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.wiremock.integrations</groupId>
@@ -127,11 +128,11 @@
                                     <groupId>org.projectlombok</groupId>
                                     <artifactId>lombok</artifactId>
                                 </path>
-                                <dependency>
+                                <path>
                                     <groupId>org.projectlombok</groupId>
                                     <artifactId>lombok-mapstruct-binding</artifactId>
                                     <version>0.2.0</version>
-                                </dependency>
+                                </path>
                             </annotationProcessorPaths>
                             <compilerArgs>
                                 <compilerArg>
