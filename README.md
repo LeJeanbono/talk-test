@@ -17,7 +17,7 @@
 * Pour cela, nous allons devoir laisser tomber les TU purs Java pour intégrer du contexte Spring
 * En annotation de classe utiliser :
 ```java
-@ExtendWith(SpringExtension.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
 @ContextConfiguration(classes = {ConferenceAdapter.class, SessionizeProvider.class, ConferenceInfraMapperImpl.class, S3Provider.class})
 ```
 * `@Mock` sera remplacé par `@MockitoBean` et `@InjectMocks` par `@Autowired`
@@ -31,6 +31,7 @@
 @SpringBootTest 
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
 ```
 * Il faut ensuite injecter `MockMvc`
 * `@Mock` sera remplacé par `@MockitoBean`
@@ -47,6 +48,7 @@
 @SpringBootTest
 @ActiveProfiles("test")
 @Testcontainers
+@ExtendWith(MockitoExtension.class)
 ```
 * Il faut maintenant démarrer un postgres dans un conteneur, grâce à testcontainer :
 ```java
@@ -81,7 +83,7 @@
 ```java
     @ServiceConnection
     static LocalStackContainer localstack = new LocalStackContainer(DockerImageName.parse("localstack/localstack:3.4"))
-            .withServices(LocalStackContainer.Service.S3);
+            .withServices("s3");
 ```
 * `@ServiceConnection` va automatiquement configurer Spring avec les informations de connexion au bucket
 * Retirer les mock sur `S3Template` et `S3ConfigurationProperties`
