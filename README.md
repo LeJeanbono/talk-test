@@ -1,5 +1,18 @@
 # Arrêtez de miser sur vos Tests Unitaires !
 
+
+## Description fonctionnelle de l'application
+
+L'application est un service de publication de conférences, voici les étapes :
+* Récupérer les données de la conférence depuis la Base de données
+* Sauvegarde des données de la conférence dans un bucket S3 (back up)
+* Appel à l'API de Sessionize pour publier la conférence
+
+## Besoins techniques
+
+* Docker installé (Pour ceux qui utilisent Podman, voici la manip' [ici](https://www.baeldung.com/java-podman-configure-testcontainers))
+* Java 25 (Si vous avez [mise](https://mise.jdx.dev/) : mise use -g java@temurin-25)
+
 ## V1 - Uniquement des TU
 
 ![image](./images/v1.png)
@@ -7,7 +20,7 @@
 ## V2 - Des TU un peu plus long
 
 ![image](./images/v2.png)
-* Créer un nouveau package de test v2 dans `fr.fellows.tp_test`
+* Copier package de test `fr.fellows.tp_test.v1` dans un nouveau package v2
 * Améliorer les tests dans `ConferenceAdapterTest`, le but est de descendre le mock d'un niveau, il faut donc mocker :
   * `RestTemplate`
   * `SessionizeConfigurationProperties`
@@ -21,10 +34,12 @@
 @ContextConfiguration(classes = {ConferenceAdapter.class, SessionizeProvider.class, ConferenceInfraMapperImpl.class, S3Provider.class})
 ```
 * `@Mock` sera remplacé par `@MockitoBean` et `@InjectMocks` par `@Autowired`
+* Les tests de S3ProviderTest et SessionizeProviderTest peuvent être supprimés
 
 ## V3 - Testons les requêtes entrantes
 ![image](./images/v3.png)
 * Créer un nouveau package de test v3 dans `fr.fellows.tp_test`
+* Copier package de test `fr.fellows.tp_test.v2_correction` dans un nouveau package v3
 * Ici c'est `ConferenceControllerTest` qui va évoluer pour simuler une requête http et l'on va devoir rajouter aussi du Spring
 * En annotation de class, utiliser :
 ```java
@@ -42,7 +57,7 @@
 
 ## v4 - Discutons avec la BDD
 ![image](./images/v4.png)
-* Créer un nouveau package de test v4 dans `fr.fellows.tp_test`
+* Copier package de test `fr.fellows.tp_test.v3_correction` dans un nouveau package v4
 * En annotation de class de `ConferenceAdapterTest`, utiliser :
 ```java
 @SpringBootTest
@@ -61,24 +76,34 @@
 
 ## v5 - Rajoutons les requêtes sortantes
 ![image](./images/v5.png)
-* Créer un nouveau package de test v5 dans `fr.fellows.tp_test`
+* Copier package de test `fr.fellows.tp_test.v4_correction` dans un nouveau package v5
 * En annotation de class de `ConferenceAdapterTest`, rajouter :
 ```java
 @EnableWireMock(@ConfigureWireMock(
         baseUrlProperties = {"sessionize.base-url"}
 ))
 ```
-* Injecter également wiremock. Il sera automatiquement démarré et son url sera automatiquement mise dans la property `sessionize.base-url`
+* Injecter également wiremock dans le test. Il sera automatiquement démarré et son url sera automatiquement mise dans la property `sessionize.base-url`
 ```java
   @InjectWireMock
   WireMockServer wireMock;
 ```
 * Retirer les mock sur `RestTemplate` et `SessionizeConfigurationProperties`
-* Dans le test, déclarer le endPoint dans wiremock `wireMock.stubFor(post("/api/talks")`, il est intéressant de vérifier le header le login, le body et de retourner un code http 201
+* Dans le test, déclarer le mock du endPoint dans wiremock `wireMock.stubFor(post("/api/talks")`, il est intéressant de vérifier le header le login, le body et de retourner un code http 201 :
+```java
+wireMock.stubFor(post("/api/talks")
+  .withBasicAuth(...)
+  .withRequestBody(equalToJson("""
+      {
+          ...
+      }
+      """))
+  .willReturn(...));
+```
 
 ## v6 - Un peu d’infrastructure AWS
 ![image](./images/v6.png)
-* Créer un nouveau package de test v5 dans `fr.fellows.tp_test`
+* Copier package de test `fr.fellows.tp_test.v5_correction` dans un nouveau package v6
 * LocalStack va servir à démarrer un conteneur docker pour simuler un bucket S3
 ```java
     @ServiceConnection
@@ -90,7 +115,8 @@
 * Injecter `S3Template` pour initialiser le bucket voulu et pour vérifier le contenu du bucket en fin de test 
 
 ## v7 - 
-* Garder les tests de la correction de la v6 et améliorer l'expérience de rédaction d'un test en créant des abstractions dans des méthodes
+* Copier package de test `fr.fellows.tp_test.v6_correction` dans un nouveau package v7
+* Garder les tests de la correction de la v6 et améliorer l'expérience de rédaction d'un test en créant des méthodes dans des abstractions
 
 Etat final :
 ![image](./images/v7.png)
