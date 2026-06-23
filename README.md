@@ -69,7 +69,7 @@ L'application est un service de publication de conférences, voici les étapes :
 ```java
   @Container
   @ServiceConnection
-  static PostgreSQLContainer<?> pg = new PostgreSQLContainer<>("postgres:latest");
+  static PostgreSQLContainer pg = new PostgreSQLContainer("postgres:latest");
 ```
 * `@ServiceConnection` va automatiquement configurer Spring avec les informations de connexion à la base de données
 * Pour insérer des jeux de données en base, j'aime bien passer par un repository, il faut donc injecter `ConferenceRepository` et l'utiliser dans le test pour faire un insert (à noter que le MockitoBean sur le repository doit disparaitre)
