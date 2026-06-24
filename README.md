@@ -12,6 +12,7 @@ L'application est un service de publication de conférences, voici les étapes :
 
 * Docker installé (Pour ceux qui utilisent Podman, voici la manip' [ici](https://www.baeldung.com/java-podman-configure-testcontainers))
 * Java 25 (Si vous avez [mise](https://mise.jdx.dev/) : mise use -g java@temurin-25)
+* Java 21 peut suffire, il suffit de modifier `java.version` dans le `pom.xml` à 21
 
 ## V1 - Uniquement des TU
 
